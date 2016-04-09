@@ -47,7 +47,7 @@ public class MWClient {
 		// TODO Auto-generated method stub
 		MWClient client = new MWClient();
 		client. getFriends("1694452301");
-		client.searchIDs("Míra Masár");
+		client.searchIDs("Samy Kartit");
 	}
 
 }

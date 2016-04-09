@@ -16,6 +16,7 @@ public class Test {
 		MWRegistryAccess MWRA = new MWRegistryAccess();
 		MWRA.openConnection(queryManagerURL, lifeCycleManagerURL);
 		MWRA.listWSDLs("MWFacebookService");
+		MWRA.listWSDLs("MWPathService");
 		MWRA.closeConnection();
 		
 	}
