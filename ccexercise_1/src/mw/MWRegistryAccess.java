@@ -19,8 +19,8 @@ import javax.xml.registry.infomodel.ServiceBinding;
 public class MWRegistryAccess {
 		
 		// Aufbau der Verbindung
-		public Connection connection;
-		public RegistryService regSvc;
+		private Connection connection;
+		private RegistryService regSvc;
 		public Set<PasswordAuthentication>  verification(){
 			String user = "gruppe0"; // entspr. Gruppennummer einsetzen
 			String password = "";
