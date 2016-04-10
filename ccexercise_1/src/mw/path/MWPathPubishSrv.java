@@ -9,7 +9,7 @@ public class MWPathPubishSrv {
 		String wsdl = "http://localhost:12345/MWPathSrv?wsdl";
 
 	
-		MWPathServiceInterface adder = new MWPathService();
+		MWPathServiceInterface adder = new MWMyPathService();
 
 	
 		Endpoint e = Endpoint.publish(wsdl, adder);

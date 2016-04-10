@@ -10,17 +10,27 @@ import javax.xml.namespace.QName;
 
 import javax.xml.ws.Service ;
 
+import mw.path.MWMyPathService;
 import mw.path.MWNoPathException;
+import mw.path.MWMyPathService;
 import mw.path.MWPathServiceInterface;
+import mw.pathclient.MWNoPathException_Exception;
+import mw.pathclient.MWPathService;
+import mw.pathclient.MWPathService_Service;
 
 public class MWClient {
 	private MWMyFacebookService MyFacebookService;
-	
+	private MWPathService MyPathService;
 	//MWFacebookService ist class, und MWMyFacebookService ist  interface
 	// Durch  MWFacebookService().getMWMyFacebookServicePort() kann man von Server --
 	//das MWMyFacebookService.class bekommen
+	
+	// MWPathService_Service class, und MWPathService ist  interface
+	// Durch  MWPathService_Service().getMWPathServicePort() kann man von Server --
+   //das MWPathService.class bekommen
 	public MWClient(){
 		MyFacebookService  = new MWFacebookService().getMWMyFacebookServicePort();
+		MyPathService = new MWPathService_Service().getMWPathServicePort();
 	}
 	
 	public void searchIDs(String name){
@@ -63,7 +73,12 @@ public class MWClient {
 	}
 	
 	public void  calculatePath(String startID, String endID) {
-		
+		try {
+			MyPathService.calculatePath(startID, endID);
+		} catch (MWNoPathException_Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static void main(String[] args) throws MalformedURLException, MWNoPathException {

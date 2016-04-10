@@ -1,5 +1,5 @@
 
-package mw.facebookclient;
+package mw.pathclient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "stringArray", propOrder = {
+@XmlType(name = "stringArray", namespace = "http://jaxb.dev.java.net/array", propOrder = {
     "item"
 })
 public class StringArray {

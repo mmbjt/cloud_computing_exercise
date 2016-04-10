@@ -1,5 +1,5 @@
 
-package mw.facebookclient;
+package mw.pathclient;
 
 import javax.xml.ws.WebFault;
 
@@ -10,8 +10,8 @@ import javax.xml.ws.WebFault;
  * Generated source version: 2.2
  * 
  */
-@WebFault(name = "MWUnknownIDException", targetNamespace = "http://facebook.mw/")
-public class MWUnknownIDException_Exception
+@WebFault(name = "MWNoPathException", targetNamespace = "http://path.mw/")
+public class MWNoPathException_Exception
     extends Exception
 {
 
@@ -19,14 +19,14 @@ public class MWUnknownIDException_Exception
      * Java type that goes as soapenv:Fault detail element.
      * 
      */
-    private MWUnknownIDException faultInfo;
+    private MWNoPathException faultInfo;
 
     /**
      * 
      * @param faultInfo
      * @param message
      */
-    public MWUnknownIDException_Exception(String message, MWUnknownIDException faultInfo) {
+    public MWNoPathException_Exception(String message, MWNoPathException faultInfo) {
         super(message);
         this.faultInfo = faultInfo;
     }
@@ -37,7 +37,7 @@ public class MWUnknownIDException_Exception
      * @param cause
      * @param message
      */
-    public MWUnknownIDException_Exception(String message, MWUnknownIDException faultInfo, Throwable cause) {
+    public MWNoPathException_Exception(String message, MWNoPathException faultInfo, Throwable cause) {
         super(message, cause);
         this.faultInfo = faultInfo;
     }
@@ -45,9 +45,9 @@ public class MWUnknownIDException_Exception
     /**
      * 
      * @return
-     *     returns fault bean: mw.client.MWUnknownIDException
+     *     returns fault bean: mw.pathclient.MWNoPathException
      */
-    public MWUnknownIDException getFaultInfo() {
+    public MWNoPathException getFaultInfo() {
         return faultInfo;
     }
 
