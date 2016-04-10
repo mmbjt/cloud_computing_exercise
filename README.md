@@ -8,6 +8,7 @@ http://134.169.47.184:4223/MWFacebookService?wsdl
 
 sudo wsimport -p mw.facebookclient -d bin -s src -keep http://134.169.47.184:4223/MWFacebookService?wsdl
 
+sudo wsimport -p mw.pathclient -d bin -s src -keep http://localhost:12345/MWPathSrv?wsdl
 
 Nicolas Van den Abeele
 Alan Fish Williams
