@@ -18,7 +18,7 @@ import mw.facebookclient.MWUnknownIDException_Exception;
 import mw.facebookclient.StringArray;
 
 
-@WebService(name = "MWMyPathService", serviceName = "MWMyPathSrv")
+@WebService(name = "MWPathService", serviceName = "MWPathService")
 @SOAPBinding(style = SOAPBinding.Style.RPC)
 
 
@@ -28,7 +28,7 @@ public class MWPathService implements MWPathServiceInterface{
 
 	private MWMyFacebookService MyFacebookService;
 	
-	
+	 //bekommen MWMyFacebookService fb
 	public MWPathService(){
 		MyFacebookService  = new MWFacebookService().getMWMyFacebookServicePort();
 	}
@@ -37,8 +37,14 @@ public class MWPathService implements MWPathServiceInterface{
 	public String[] calculatePath(String startID, String endID) throws MWNoPathException {
 		
 		List<String> sAllFriends = null,eAllFriends = null;
+		
+		//sAF und eAF speichern die  Freundeskreis von  friendsStart  und friendsEnd
 		Set sAF = null,eAF = null;
+		
+		//  sAFtemp und eAFtemp speichern die neue Freunden von letztem Loop
+        // Am End von jedem Loop musst diese Zwei Liste clear werden, weil sie temporäre Variable sind
 		Set sAFtemp = new HashSet(), eAFtemp = new HashSet();
+		
 		try {
 			StringArray newStartFriends = MyFacebookService.getFriends(startID);
 			StringArray newEndFriends = MyFacebookService.getFriends(endID);
@@ -49,8 +55,7 @@ public class MWPathService implements MWPathServiceInterface{
 			eAF = new HashSet(eAllFriends);
 			sAF.add(startID);
 			eAF.add(endID);
-				
-			
+						
 		} catch (MWUnknownIDException_Exception e) {
 			
 			e.printStackTrace();
@@ -60,14 +65,9 @@ public class MWPathService implements MWPathServiceInterface{
 		/*Iterator<String> sit = sAF.iterator();
 		while(sit.hasNext())
 		{
-			
-				
-				System.out.println(sit.next());
-				
+				System.out.println(sit.next());	
 		}
-		
 		System.out.println("++++++++++++");
-		
 		Iterator<String> eit = eAF.iterator();
 		while(eit.hasNext())
 		{
@@ -75,17 +75,20 @@ public class MWPathService implements MWPathServiceInterface{
 		}
 		*/
 		
-		
-		
-		
-		
+		//Hauptloop
 		while(true)
 		{
+			
+			//Wenn die zwei Freundeskreis von  friendsStart  und friendsEnd schneiden
+			//，break und MWDijkstra.getShortestPath
 			if(!Collections.disjoint(sAF, eAF))
 			{
 				break;
 			}
 			
+			
+			//Finden alle Frienden von menschen, wem in sAF(Freundeskreis von  friendsStart) sind;
+			// und solche neue Freunden werden in sAFtemp speichert.
 			Iterator<String> sit = sAF.iterator();
 			while(sit.hasNext())
 			{
@@ -98,18 +101,18 @@ public class MWPathService implements MWPathServiceInterface{
 					e.printStackTrace();
 				}
 			}
+			
 			int sSize1 = sAF.size();
-			sAF.addAll(sAFtemp);
-			int sSize2 = sAF.size();
-			
-			
-			sAFtemp.clear();
+			sAF.addAll(sAFtemp);    //neue Freunden werden in sAF speichert.
+			int sSize2 = sAF.size();		
+			sAFtemp.clear();             //clear sAFtemp
 					
 			
 			//System.out.println("+++++++++");
 			
 			
-			
+			//Finden alle Frienden von menschen, wem in eAF(Freundeskreis von  friendsEnd) sind;
+			// und solche neue Freunden werden in eAFtemp speichert.
 			Iterator<String> eit = eAF.iterator();
 			while(eit.hasNext())
 			{
@@ -122,36 +125,34 @@ public class MWPathService implements MWPathServiceInterface{
 			}
 			
 			
-			
 			int eSize1 = eAF.size();
-			eAF.addAll(eAFtemp);
+			eAF.addAll(eAFtemp);   //neue Freunden werden in eAF speichert.
 			int eSize2 = eAF.size();
-			eAFtemp.clear();
+			eAFtemp.clear();            //clear eAFtemp
 			
-			
-			
+			//Nach Hinzufügen neuer Freunde， wenn die Zahle von diesen zwei Freundeskreis nicht steigen,
+			//d.h diese zwei Freundeskreis haben ewig kein Schneiden---->throw MWNoPathException
 			if(sSize1 == sSize2 && eSize1 == eSize2)
 			{
 				throw new MWNoPathException("noPath");
 			}
 			
 		}
-		
-		
-		System.out.println("********");
-		
+			
+		//System.out.println("********");
+		//wenn diese zwei Freundeskreis ein Schneiden haben,
+		//löschen die doppelten Daten
+		//und speichern alle Freunden in ein Set für  MWDijkstra
 		Set aF = new HashSet();
 		aF.addAll(sAF);
 		aF.addAll(eAF);
 		
-		Iterator<String> it = aF.iterator(); 
+		/*Iterator<String> it = aF.iterator(); 
 		while(it.hasNext())
 		{
 			String value = it.next();
 			System.out.println(value);
-		}
-		
-
+		}*/
 		
 		return MWDijkstra.getShortestPath(MyFacebookService, aF, startID, endID);
 	}

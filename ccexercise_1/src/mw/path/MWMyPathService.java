@@ -9,16 +9,14 @@ import mw.*;
 import mw.facebookclient.*;
 
 
-
-
 public class MWMyPathService {
 
+	
     protected MWMyFacebookService fb = new MWFacebookService().getMWMyFacebookServicePort();
-
-  
+   
     public String[] calculatePath(String startID, String endID) throws MWNoPathException {
 
-        Set<String> friendsAll = new HashSet<String>(); {
+    		Set<String> friendsAll = new HashSet<String>(); 
             List<String> friendsStart, friendsEnd;
             try {
                 friendsStart = fb.getFriends(startID).getItem();
@@ -27,9 +25,13 @@ public class MWMyPathService {
             	throw new MWNoPathException("Start or end not found!");
             }
 
-            // these contain actual new friends from last loop
+           
             List<String> newFriendsStart = new ArrayList(friendsStart), newFriendsEnd = new ArrayList(friendsEnd);
+            
+            //Hauptloop
             while(true) {
+            	
+            	
                 if(!Collections.disjoint(friendsStart, friendsEnd)) {
                     break;
                 }
@@ -71,7 +73,7 @@ public class MWMyPathService {
             // combine the friend lists
             friendsAll.addAll(friendsStart);
             friendsAll.addAll(friendsEnd);
-        }
+        
         friendsAll.add(startID);
         friendsAll.add(endID);
 

@@ -6,7 +6,7 @@ public class MWPathPubishSrv {
 	public static void main(String[] args) throws Exception {
 
 		
-		String wsdl = "http://10.101.8.30:12346/MWMyPathSrv?wsdl";
+		String wsdl = "http://localhost:12345/MWPathSrv?wsdl";
 
 	
 		MWPathServiceInterface adder = new MWPathService();

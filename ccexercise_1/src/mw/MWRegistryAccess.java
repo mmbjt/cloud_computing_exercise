@@ -1,6 +1,7 @@
 package mw;
 
 import java.net.PasswordAuthentication;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -10,11 +11,14 @@ import java.util.Properties;
 import java.util.Set;
 
 import javax.security.auth.login.CredentialException;
+import javax.xml.namespace.QName;
 import javax.xml.registry.*;
 import javax.xml.registry.infomodel.InternationalString;
 import javax.xml.registry.infomodel.Organization;
 import javax.xml.registry.infomodel.Service;
 import javax.xml.registry.infomodel.ServiceBinding;
+
+
 
 
 public class MWRegistryAccess {
@@ -24,11 +28,12 @@ public class MWRegistryAccess {
 		private RegistryService regSvc;
 		
 		
-		
-		
 		public void openConnection(String queryMangerURL, String lifeCycleManagerURL) {
 				// Zusammenstellung der Verbindungsdaten
 				Properties props = new Properties();
+				//The Properties class represents a persistent set of properties. 
+				//The Properties can be saved to a stream or loaded from a stream. 
+				//Each key and its corresponding value in the property list is a string.
 				props.setProperty("javax.xml.registry.queryManagerURL", queryMangerURL);
 				props.setProperty("javax.xml.registry.lifeCycleManagerURL",lifeCycleManagerURL);
 				try {
@@ -36,13 +41,15 @@ public class MWRegistryAccess {
 					fact.setProperties(props);
 					
 					connection = fact.createConnection();
-					//connection.setCredentials(verification());
+					//connection.setCredentials(authenticate("group8", ""));
+					//Rein lesende Operationen ! keine Authentifizierung notwendig
 					//System.out.println(connection.isClosed());
 					regSvc = connection.getRegistryService();
 					} catch(Exception e) {
 						System.out.println("connection faild!");
 					}
 		}
+		
 		
 		public void closeConnection(){
 				try {
@@ -54,40 +61,42 @@ public class MWRegistryAccess {
 				}
 		} 
 		
+		
 		public void listWSDLs(String serviceName){
 			
-			// Erzeugung der Suchkriterien
-			Collection<String> findQualifiers = new ArrayList<String>();
-			findQualifiers.add(FindQualifier.SORT_BY_NAME_ASC);
-			// Erzeugung der Namenskriterien
-			Collection<String> namePatterns = new ArrayList<String>();
-			namePatterns.add("%"+serviceName+"%");
-			// Ausfuehrung der Suche
-			try {
-			BusinessQueryManager m = regSvc.getBusinessQueryManager();
-			BulkResponse br = m.findServices(null, null, namePatterns, null, null);;
-			Collection<Service> services = br.getCollection();
-			//System.out.println(services.size());
+				// Erzeugung der Suchkriterien
+				Collection<String> findQualifiers = new ArrayList<String>();
+				findQualifiers.add(FindQualifier.SORT_BY_NAME_ASC);
+				// Erzeugung der Namenskriterien
+				Collection<String> namePatterns = new ArrayList<String>();
+				namePatterns.add("%"+serviceName+"%");
+				// Ausfuehrung der Suche
+				try {
+					BusinessQueryManager m = regSvc.getBusinessQueryManager();
+					//Suchen Services
+					BulkResponse br = m.findServices(null, null, namePatterns, null, null);
+					
 			
-			for(Service s: services){
-				Collection<ServiceBinding> sb  = s.getServiceBindings();
-				for(ServiceBinding address: sb){
-					System.out.println(address.getAccessURI());
+					//Wenn man möchtet Organizations suchen, kann man schreiben:
+					//BulkResponse br = m.findOrganizations(findQualifiers,namePatterns, null, null, null, null);
+					//Collection<Organization> orgs = br.getCollection();
+			
+					Collection<Service> services = br.getCollection();
+					//System.out.println(services.size());
+			
+					for(Service s: services){
+						Collection<ServiceBinding> sb  = s.getServiceBindings();
+						for(ServiceBinding address: sb){
+							System.out.println(address.getAccessURI());
+						}
+					}
+				} catch(Exception e) { 
+					System.out.println("list WSDL faild!");
 				}
-			}
-            //Iterator<Service> its = services.iterator();
-            //while(its.hasNext()){
-            	//System.out.println("gut");
-                 
-            	//s.getWSDLDocumentLocation();
-          //  }
-			} catch(Exception e) { 
-				System.out.println("list WSDL faild!");
-			}
 		}
 		
 		
-		
+		//Einloggen mit Benutzername und Passwort
 		public void authenticate(String userName, String password){
 			
 			PasswordAuthentication pa = new PasswordAuthentication(userName,password.toCharArray());
@@ -102,26 +111,28 @@ public class MWRegistryAccess {
 		}
 		
 		
-		
-		
+		//Registration von  Service
 		public void registerService(String orgName, String serviceName, String wsdlURL)
 		{
 			BusinessLifeCycleManager lcm;
 			try {
 				lcm = regSvc.getBusinessLifeCycleManager();
 				
+				//1. createOrganization
 				InternationalString os = lcm.createInternationalString(orgName);
 				Organization organization = lcm.createOrganization(os);
 				
-				
+				//2.createService
 				InternationalString ss = lcm.createInternationalString(serviceName);
 				Service service = lcm.createService(ss);
-				organization.addService(service);
+				//organization.addService(service);
+				organization.removeService(service);
 				
-				
+				//3.createServiceBinding
 				ServiceBinding binding = lcm.createServiceBinding();
 				binding.setAccessURI(wsdlURL);
-				service.addServiceBinding(binding);
+				//service.addServiceBinding(binding);
+				service.removeServiceBinding(binding);
 				
 				Collection<Organization> orgs = new ArrayList<Organization>(1);
 				orgs.add(organization);
@@ -133,7 +144,6 @@ public class MWRegistryAccess {
 			}
 			
 		}
-		
 		
 		
 		public static void main(String[] args) {
