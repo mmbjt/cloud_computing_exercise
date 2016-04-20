@@ -11,6 +11,8 @@ sudo wsimport -p mw.facebookclient -d bin -s src -keep http://134.169.47.184:422
 sudo wsimport -p mw.pathclient -d bin -s src -keep http://localhost:12345/MWPathSrv?wsdl
 sudo chmod 777 ./ -R
 
+java -cp ./:jaxr-api.jar:jarx-impl-mwcc.jar mw/MWRegistryAccess LIST MWFacebookServiced
+
 Nicolas Van den Abeele
 Alan Fish Williams
 Seth Raul Vettel ❼
