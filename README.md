@@ -13,6 +13,8 @@ sudo chmod 777 ./ -R
 
 java -cp ./:jaxr-api.jar:jarx-impl-mwcc.jar mw/MWRegistryAccess LIST MWFacebookServiced
 
+java -cp ./:jaxr-api.jar:jarx-impl-mwcc.jar mw.facebookclient.MWClient PATH 1694452301 100000859170147
+
 Nicolas Van den Abeele
 Alan Fish Williams
 Seth Raul Vettel ❼
